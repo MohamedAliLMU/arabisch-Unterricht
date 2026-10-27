@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>عالم الضمائر والتصريف الشيق للأطفال</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts: Cairo -->
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    <!-- Canvas Confetti for Game Victory -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            purple: '#6C5CE7',
+                            pink: '#FD79A8',
+                            yellow: '#FDCB6E',
+                            green: '#00B894',
+                            blue: '#0984E3',
+                            orange: '#E17055'
+                        }
+                    },
+                    fontFamily: {
+                        cairo: ['Cairo', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Cairo', sans-serif;
+            background-color: #F7F9FC;
+        }
+        .bouncy {
+            animation: bounce 2s infinite;
+        }
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        .card-hover {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .card-hover:hover {
+            transform: translateY(-8px) scale(1.02);
+        }
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #6C5CE7;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 min-h-screen text-slate-800 flex flex-col justify-between selection:bg-purple-200">
+
+    <!-- Navigation Header -->
+    <header class="bg-white shadow-md sticky top-0 z-50 border-b-4 border-brand-purple">
+        <div class="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
+            <div class="flex items-center space-x-3 space-x-reverse cursor-pointer" onclick="switchTab('explore')">
+                <div class="bg-brand-purple text-white p-3 rounded-2xl shadow-lg transform -rotate-6">
+                    <i class="fa-solid fa-graduation-cap text-2xl"></i>
+                </div>
+                <div>
+                    <h1 class="text-2xl font-black text-brand-purple tracking-wide">عَالَمُ الضَّمَائِرِ</h1>
+                    <p class="text-xs text-slate-500 font-semibold">تعلّم واكتشف لغتك العربية بمتعة!</p>
+                </div>
+            </div>
+
+            <!-- Main Navigation Buttons -->
+            <nav class="hidden md:flex items-center gap-2 bg-slate-100 p-1.5 rounded-2xl">
+                <button onclick="switchTab('explore')" id="nav-explore" class="tab-btn active-tab px-5 py-2.5 rounded-xl font-bold transition flex items-center gap-2 bg-brand-purple text-white shadow-sm">
+                    <i class="fa-solid fa-compass"></i> استكشف الضمائر
+                </button>
+                <button onclick="switchTab('verbs')" id="nav-verbs" class="tab-btn px-5 py-2.5 rounded-xl font-bold transition flex items-center gap-2 text-slate-600 hover:bg-slate-200">
+                    <i class="fa-solid fa-book-open"></i> تصريف الأفعال
+                </button>
+                <button onclick="switchTab('game')" id="nav-game" class="tab-btn px-5 py-2.5 rounded-xl font-bold transition flex items-center gap-2 text-slate-600 hover:bg-slate-200">
+                    <i class="fa-solid fa-puzzle-piece"></i> ألعاب وتدريبات
+                </button>
+                <button onclick="switchTab('quiz')" id="nav-quiz" class="tab-btn px-5 py-2.5 rounded-xl font-bold transition flex items-center gap-2 text-slate-600 hover:bg-slate-200">
+                    <i class="fa-solid fa-star"></i> الاختبار التفاعلي
+                </button>
+            </nav>
+
+            <!-- Star Counter / Score -->
+            <div class="flex items-center gap-2 bg-amber-100 border-2 border-amber-300 px-4 py-2 rounded-full shadow-inner">
+                <i class="fa-solid fa-star text-amber-500 text-xl bouncy"></i>
+                <span id="global-score" class="font-extrabold text-amber-700 text-lg">0</span>
+                <span class="text-xs font-bold text-amber-600">نقطة</span>
+            </div>
+        </div>
+
+        <!-- Mobile Bottom Nav bar -->
+        <div class="md:hidden flex justify-around bg-white border-t p-2">
+            <button onclick="switchTab('explore')" class="mobile-tab text-brand-purple text-xs flex flex-col items-center gap-1 font-bold">
+                <i class="fa-solid fa-compass text-lg"></i> الضمائر
+            </button>
+            <button onclick="switchTab('verbs')" class="mobile-tab text-slate-500 text-xs flex flex-col items-center gap-1 font-bold">
+                <i class="fa-solid fa-book-open text-lg"></i> التصريف
+            </button>
+            <button onclick="switchTab('game')" class="mobile-tab text-slate-500 text-xs flex flex-col items-center gap-1 font-bold">
+                <i class="fa-solid fa-puzzle-piece text-lg"></i> الألعاب
+            </button>
+            <button onclick="switchTab('quiz')" class="mobile-tab text-slate-500 text-xs flex flex-col items-center gap-1 font-bold">
+                <i class="fa-solid fa-star text-lg"></i> الاختبار
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="max-w-7xl mx-auto px-4 py-6 flex-1 w-full">
+
+        <!-- TAB 1: EXPLORE PRONOUNS -->
+        <section id="tab-explore" class="tab-content block">
+            <div class="text-center mb-8">
+                <h2 class="text-3xl font-extrabold text-slate-800 mb-2">أنواع الضمائر المنفصلة</h2>
+                <p class="text-slate-600 text-lg max-w-2xl mx-auto">اختر إحدى المجموعات لتكتشف الضمائر وكيف نستخدمها في الكلام اليومي!</p>
+            </div>
+
+            <!-- Categories Tabs -->
+            <div class="flex justify-center gap-3 mb-8 flex-wrap">
+                <button onclick="filterPronounCategory('all')" class="cat-btn bg-brand-purple text-white px-6 py-2.5 rounded-full font-bold shadow hover:opacity-90">الكل</button>
+                <button onclick="filterPronounCategory('speaker')" class="cat-btn bg-white border-2 border-brand-blue text-brand-blue px-6 py-2.5 rounded-full font-bold shadow-sm hover:bg-blue-50">ضمائر المتكلم 🙋‍♂️</button>
+                <button onclick="filterPronounCategory('addressee')" class="cat-btn bg-white border-2 border-brand-pink text-brand-pink px-6 py-2.5 rounded-full font-bold shadow-sm hover:bg-pink-50">ضمائر المخاطب 👉</button>
+                <button onclick="filterPronounCategory('absent')" class="cat-btn bg-white border-2 border-brand-green text-brand-green px-6 py-2.5 rounded-full font-bold shadow-sm hover:bg-green-50">ضمائر الغائب 👀</button>
+            </div>
+
+            <!-- Pronouns Grid -->
+            <div id="pronoun-cards-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Cards will be dynamically populated by JS -->
+            </div>
+        </section>
+
+        <!-- TAB 2: VERB CONJUGATION -->
+        <section id="tab-verbs" class="tab-content hidden">
+            <div class="text-center mb-8">
+                <h2 class="text-3xl font-extrabold text-slate-800 mb-2">تصريف الأفعال مع الضمائر</h2>
+                <p class="text-slate-600 text-lg">اختر الفعل وانتقل بين الأزمنة لتشاهد كيف يتغير الفعل مع كل ضمير!</p>
+            </div>
+
+            <!-- Verb Selector & Controls -->
+            <div class="bg-white p-6 rounded-3xl shadow-lg border border-slate-100 mb-8">
+                <div class="flex flex-col md:flex-row items-center justify-between gap-6">
+                    <!-- Verb Pickers -->
+                    <div class="flex items-center gap-3 w-full md:w-auto">
+                        <label class="font-bold text-slate-700 text-lg whitespace-nowrap">اختر الفعل:</label>
+                        <select id="verb-select" onchange="renderVerbTable()" class="w-full md:w-48 bg-slate-100 border-2 border-brand-purple text-brand-purple text-xl font-black rounded-2xl px-4 py-2 focus:outline-none">
+                            <option value="كتب">كَتَبَ ✍️</option>
+                            <option value="قرأ">قَرَأَ 📖</option>
+                            <option value="لعب">لَعِبَ ⚽</option>
+                            <option value="أكل">أَكَلَ 🍎</option>
+                            <option value="ذهب">ذَهَبَ 🚶‍♂️</option>
+                        </select>
+                    </div>
+
+                    <!-- Tense Filter Tabs -->
+                    <div class="flex bg-slate-100 p-1.5 rounded-2xl gap-2 w-full md:w-auto justify-center">
+                        <button onclick="setTense('past')" id="tense-past" class="tense-btn bg-brand-orange text-white px-5 py-2 rounded-xl font-bold shadow-sm">الماضي ⏳</button>
+                        <button onclick="setTense('present')" id="tense-present" class="tense-btn text-slate-600 px-5 py-2 rounded-xl font-bold hover:bg-slate-200">المضارع 🔄</button>
+                        <button onclick="setTense('imperative')" id="tense-imperative" class="tense-btn text-slate-600 px-5 py-2 rounded-xl font-bold hover:bg-slate-200">الأمر 🎯</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Conjugation Table Cards Display -->
+            <div id="verb-conjugation-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <!-- Dynamically generated verb cards -->
+            </div>
+        </section>
+
+        <!-- TAB 3: MATCHING / DRAG AND DROP GAME -->
+        <section id="tab-game" class="tab-content hidden">
+            <div class="text-center mb-6">
+                <h2 class="text-3xl font-extrabold text-slate-800 mb-2">لعبة مطابقة الضمائر والتصريف</h2>
+                <p class="text-slate-600 text-lg">اسحب الضمير وضعْه في المكان المناسب لتكمل الجملة بشكل صحيح!</p>
+            </div>
+
+            <div class="bg-white rounded-3xl p-6 md:p-8 shadow-xl border-2 border-brand-purple/20 max-w-4xl mx-auto">
+                <!-- Game Header Status -->
+                <div class="flex justify-between items-center mb-6 border-b pb-4">
+                    <div>
+                        <span class="text-slate-500 text-sm font-bold">المستوى:</span>
+                        <span id="game-level" class="text-brand-purple font-black text-xl mr-2">1 من 3</span>
+                    </div>
+                    <button onclick="resetMatchingGame()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 px-4 py-2 rounded-xl text-sm font-bold transition flex items-center gap-1">
+                        <i class="fa-solid fa-rotate-right"></i> إعادة اللعبة
+                    </button>
+                </div>
+
+                <!-- Pronoun Source Pool (Draggable) -->
+                <div class="mb-8 bg-slate-50 p-4 rounded-2xl border-2 border-dashed border-slate-300">
+                    <h3 class="text-sm font-bold text-slate-500 mb-3 text-center">الضمائر المتاحة (قم بالسحب أو الضغط للفي اختيار):</h3>
+                    <div id="drag-pronouns-pool" class="flex flex-wrap gap-4 justify-center min-h-[60px] items-center">
+                        <!-- Pronoun badges will be loaded here -->
+                    </div>
+                </div>
+
+                <!-- Sentences Target Pool -->
+                <div id="drop-sentences-container" class="space-y-4">
+                    <!-- Sentence targets loaded here -->
+                </div>
+
+                <!-- Check Answers Button -->
+                <div class="mt-8 text-center">
+                    <button onclick="checkMatchingAnswers()" class="bg-brand-green hover:bg-emerald-600 text-white font-extrabold text-xl px-10 py-4 rounded-2xl shadow-lg transform hover:scale-105 transition flex items-center gap-3 mx-auto">
+                        <i class="fa-solid fa-circle-check"></i> التحقق من الإجابات
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 4: QUIZ -->
+        <section id="tab-quiz" class="tab-content hidden">
+            <div class="max-w-2xl mx-auto">
+                <div class="bg-white rounded-3xl shadow-2xl overflow-hidden border-2 border-slate-100">
+                    <!-- Quiz Header -->
+                    <div class="bg-gradient-to-r from-brand-purple to-indigo-600 p-6 text-white text-center relative">
+                        <span id="quiz-progress-text" class="bg-white/20 px-3 py-1 rounded-full text-xs font-bold tracking-wider uppercase mb-2 inline-block">السؤال 1 من 5</span>
+                        <h2 id="quiz-question-title" class="text-2xl md:text-3xl font-extrabold mt-1">عنوان السؤال يتغير هنا؟</h2>
+                    </div>
+
+                    <!-- Quiz Content -->
+                    <div class="p-6 md:p-8">
+                        <div id="quiz-options-container" class="space-y-4">
+                            <!-- Options rendered dynamically -->
+                        </div>
+
+                        <!-- Feedback Box -->
+                        <div id="quiz-feedback" class="mt-6 p-4 rounded-2xl text-center font-bold hidden text-lg"></div>
+
+                        <!-- Next Question Button -->
+                        <div class="mt-6 text-center">
+                            <button id="quiz-next-btn" onclick="nextQuizQuestion()" class="hidden bg-brand-purple text-white font-black text-lg px-8 py-3 rounded-2xl hover:bg-purple-700 transition shadow-lg">
+                                السؤال التالي <i class="fa-solid fa-arrow-left mr-2"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-slate-200 mt-12 py-6 text-center text-slate-500 font-medium">
+        <div class="max-w-7xl mx-auto px-4">
+            <p>مبني بالاعتماد على المناهج التعليمية المعتمدة لتعليم العربية للناطقين بها وبغيرها 🌟</p>
+            <p class="text-xs text-slate-400 mt-1">تطبيق تعليمي تفاعلي للأطفال</p>
+        </div>
+    </footer>
+
+    <!-- Audio Speech Synthesis Helper Script -->
+    <script>
+        // Speech Synthesis Function
+        function speakText(text) {
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.cancel(); // Stop current speech
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.lang = 'ar-SA';
+                utterance.rate = 0.85; // Slightly slower for children
+                window.speechSynthesis.speak(utterance);
+            } else {
+                alert("متصفحك لا يدعم خاصية نطق الصوت.");
+            }
+        }
+
+        // State Management
+        let globalScore = 0;
+        let currentTense = 'past'; // past, present, imperative
+
+        // Database of Pronouns based on standard sources (دروس اللغة العربية)
+        const PRONOUNS_DATA = [
+            // المتكلم
+            { id: 'ana', name: 'أَنَا', type: 'speaker', category: 'ضمائر المتكلم', desc: 'للمفرد (المذكر والمؤنث)', example: 'أَنَا طَالِبٌ مجْتَهِدٌ', icon: '🙋‍♂️', color: 'border-brand-blue bg-blue-50 text-brand-blue' },
+            { id: 'nahnu', name: 'نَحْنُ', type: 'speaker', category: 'ضمائر المتكلم', desc: 'للمثنى والجمع (المذكر والمؤنث)', example: 'نَحْنُ نَلْعَبُ كُرَةَ القَدَمِ', icon: '👥', color: 'border-brand-blue bg-blue-50 text-brand-blue' },
+
+            // المخاطب
+            { id: 'anta', name: 'أَنْتَ', type: 'addressee', category: 'ضمائر المخاطب', desc: 'للمفرد المذكر', example: 'أَنْتَ وَلَدٌ ذَكِيٌّ', icon: '👦', color: 'border-brand-pink bg-pink-50 text-brand-pink' },
+            { id: 'anti', name: 'أَنْتِ', type: 'addressee', category: 'ضمائر المخاطب', desc: 'للمفرد المؤنث', example: 'أَنْتِ بِنْتٌ نَشِيطَةٌ', icon: '👧', color: 'border-brand-pink bg-pink-50 text-brand-pink' },
+            { id: 'antuma', name: 'أَنْتُمَا', type: 'addressee', category: 'ضمائر المخاطب', desc: 'للمثنى (المذكر والمؤنث)', example: 'أَنْتُمَا صَدِيقَانِ مُخْلِصَانِ', icon: '🧑‍🤝‍🧑', color: 'border-brand-pink bg-pink-50 text-brand-pink' },
+            { id: 'antum', name: 'أَنْتُمْ', type: 'addressee', category: 'ضمائر المخاطب', desc: 'لجمع الذكور', example: 'أَنْتُمْ أَبْطَالُ المَدْرَسَةِ', icon: '👨‍👩‍👦', color: 'border-brand-pink bg-pink-50 text-brand-pink' },
+            { id: 'antunna', name: 'أَنْتُنَّ', type: 'addressee', category: 'ضمائر المخاطب', desc: 'لجمع الإناث', example: 'أَنْتُنَّ طَالِبَاتٌ مُتَفَوِّقَاتٌ', icon: '👩‍👩‍👧', color: 'border-brand-pink bg-pink-50 text-brand-pink' },
+
+            // الغائب
+            { id: 'huwa', name: 'هُوَ', type: 'absent', category: 'ضمائر الغائب', desc: 'للمفرد المذكر الغائب', example: 'هُوَ يَقْرَأُ كِتَاباً مُفِيداً', icon: '🧍‍♂️', color: 'border-brand-green bg-green-50 text-brand-green' },
+            { id: 'hiya', name: 'هِيَ', type: 'absent', category: 'ضمائر الغائب', desc: 'للمفرد المؤنث الغائب', example: 'هِيَ تَرْسُمُ لَوْحَةً جَمِيلَةً', icon: '🧍‍♀️', color: 'border-brand-green bg-green-50 text-brand-green' },
+            { id: 'huma', name: 'هُمَا', type: 'absent', category: 'ضمائر الغائب', desc: 'للمثنى (المذكر والمؤنث)', example: 'هُمَا يَلْعَبَانِ فِي الحَدِيقَةِ', icon: '👫', color: 'border-brand-green bg-green-50 text-brand-green' },
+            { id: 'hum', name: 'هُمْ', type: 'absent', category: 'ضمائر الغائب', desc: 'لجمع الذكور الغائبين', example: 'هُمْ يَكْتُبُونَ الدَّرْسَ', icon: '👨‍👨‍👦', color: 'border-brand-green bg-green-50 text-brand-green' },
+            { id: 'hunna', name: 'هُنَّ', type: 'absent', category: 'ضمائر الغائب', desc: 'لجمع الإناث الغائبات', example: 'هُنَّ يَحْفَظْنَ القُرْآنَ', icon: '👩‍👩‍👧‍👦', color: 'border-brand-green bg-green-50 text-brand-green' }
+        ];
+
+        // Verb Conjugations Database
+        const VERB_DATA = {
+            'كتب': {
+                past: { 'أَنَا': 'كَتَبْتُ', 'نَحْنُ': 'كَتَبْنَا', 'أَنْتَ': 'كَتَبْتَ', 'أَنْتِ': 'كَتَبْتِ', 'أَنْتُمَا': 'كَتَبْتُمَا', 'أَنْتُمْ': 'كَتَبْتُمْ', 'أَنْتُنَّ': 'كَتَبْتُنَّ', 'هُوَ': 'كَتَبَ', 'هِيَ': 'كَتَبَتْ', 'هُمَا': 'كَتَبَا', 'هُمْ': 'كَتَبُوا', 'هُنَّ': 'كَتَبْنَ' },
+                present: { 'أَنَا': 'أَكْتُبُ', 'نَحْنُ': 'نَكْتُبُ', 'أَنْتَ': 'تَكْتُبُ', 'أَنْتِ': 'تَكْتُبِينَ', 'أَنْتُمَا': 'تَكْتُبَانِ', 'أَنْتُمْ': 'تَكْتُبُونَ', 'أَنْتُنَّ': 'تَكْتُبْنَ', 'هُوَ': 'يَكْتُبُ', 'هِيَ': 'تَكْتُبُ', 'هُمَا': 'يَكْتُبَانِ', 'هُمْ': 'يَكْتُبُونَ', 'هُنَّ': 'يَكْتُبْنَ' },
+                imperative: { 'أَنْتَ': 'اُكْتُبْ', 'أَنْتِ': 'اُكْتُبِي', 'أَنْتُمَا': 'اُكْتُبَا', 'أَنْتُمْ': 'اُكْتُبُوا', 'أَنْتُنَّ': 'اُكْتُبْنَ' }
+            },
+            'قرأ': {
+                past: { 'أَنَا': 'قَرَأْتُ', 'نَحْنُ': 'قَرَأْنَا', 'أَنْتَ': 'قَرَأْتَ', 'أَنْتِ': 'قَرَأْتِ', 'أَنْتُمَا': 'قَرَأْتُمَا', 'أَنْتُمْ': 'قَرَأْتُمْ', 'أَنْتُنَّ': 'قَرَأْتُنَّ', 'هُوَ': 'قَرَأَ', 'هِيَ': 'قَرَأَتْ', 'هُمَا': 'قَرَأَا', 'هُمْ': 'قَرَأُوا', 'هُنَّ': 'قَرَأْنَ' },
+                present: { 'أَنَا': 'أَقْرَأُ', 'نَحْنُ': 'نَقْرَأُ', 'أَنْتَ': 'تَقْرَأُ', 'أَنْتِ': 'تَقْرَأِينَ', 'أَنْتُمَا': 'تَقْرَأَانِ', 'أَنْتُمْ': 'تَقْرَأُونَ', 'أَنْتُنَّ': 'تَقْرَأْنَ', 'هُوَ': 'يَقْرَأُ', 'هِيَ': 'تَقْرَأُ', 'هُمَا': 'يَقْرَأَانِ', 'هُمْ': 'يَقْرَأُونَ', 'هُنَّ': 'يَقْرَأْنَ' },
+                imperative: { 'أَنْتَ': 'اقْرَأْ', 'أَنْتِ': 'اقْرَئِي', 'أَنْتُمَا': 'اقْرَآ', 'أَنْتُمْ': 'اقْرَءُوا', 'أَنْتُنَّ': 'اقْرَأْنَ' }
+            },
+            'لعب': {
+                past: { 'أَنَا': 'لَعِبْتُ', 'نَحْنُ': 'لَعِبْنَا', 'أَنْتَ': 'لَعِبْتَ', 'أَنْتِ': 'لَعِبْتِ', 'أَنْتُمَا': 'لَعِبْتُمَا', 'أَنْتُمْ': 'لَعِبْتُمْ', 'أَنْتُنَّ': 'لَعِبْتُنَّ', 'هُوَ': 'لَعِبَ', 'هِيَ': 'لَعِبَتْ', 'هُمَا': 'لَعِبَا', 'هُمْ': 'لَعِبُوا', 'هُنَّ': 'لَعِبْنَ' },
+                present: { 'أَنَا': 'أَلْعَبُ', 'نَحْنُ': 'نَلْعَبُ', 'أَنْتَ': 'تَلْعَبُ', 'أَنْتِ': 'تَلْعَبِينَ', 'أَنْتُمَا': 'تَلْعَبَانِ', 'أَنْتُمْ': 'تَلْعَبُونَ', 'أَنْتُنَّ': 'تَلْعَبْنَ', 'هُوَ': 'يَلْعَبُ', 'هِيَ': 'تَلْعَبُ', 'هُمَا': 'يَلْعَبَانِ', 'هُمْ': 'يَلْعَبُونَ', 'هُنَّ': 'يَلْعَبْنَ' },
+                imperative: { 'أَنْتَ': 'الْعَبْ', 'أَنْتِ': 'الْعَبِي', 'أَنْتُمَا': 'الْعَبَا', 'أَنْتُمْ': 'الْعَبُوا', 'أَنْتُنَّ': 'الْعَبْنَ' }
+            },
+            'أكل': {
+                past: { 'أَنَا': 'أَكَلْتُ', 'نَحْنُ': 'أَكَلْنَا', 'أَنْتَ': 'أَكَلْتَ', 'أَنْتِ': 'أَكَلْتِ', 'أَنْتُمَا': 'أَكَلْتُمَا', 'أَنْتُمْ': 'أَكَلْتُمْ', 'أَنْتُنَّ': 'أَكَلْتُنَّ', 'هُوَ': 'أَكَلَ', 'هِيَ': 'أَكَلَتْ', 'هُمَا': 'أَكَلَا', 'هُمْ': 'أَكَلُوا', 'هُنَّ': 'أَكَلْنَ' },
+                present: { 'أَنَا': 'آكُلُ', 'نَحْنُ': 'نَأْكُلُ', 'أَنْتَ': 'تَأْكُلُ', 'أَنْتِ': 'تَأْكُلِينَ', 'أَنْتُمَا': 'تَأْكُلَانِ', 'أَنْتُمْ': 'تَأْكُلُونَ', 'أَنْتُنَّ': 'تَأْكُلْنَ', 'هُوَ': 'يَأْكُلُ', 'هِيَ': 'تَأْكُلُ', 'هُمَا': 'يَأْكُلَانِ', 'هُمْ': 'يَأْكُلُونَ', 'هُنَّ': 'يَأْكُلْنَ' },
+                imperative: { 'أَنْتَ': 'كُلْ', 'أَنْتِ': 'كُلِي', 'أَنْتُمَا': 'كُلَا', 'أَنْتُمْ': 'كُلُوا', 'أَنْتُنَّ': 'كُلْنَ' }
+            },
+            'ذهب': {
+                past: { 'أَنَا': 'ذَهَبْتُ', 'نَحْنُ': 'ذَهَبْنَا', 'أَنْتَ': 'ذَهَبْتَ', 'أَنْتِ': 'ذَهَبْتِ', 'أَنْتُمَا': 'ذَهَبْتُمَا', 'أَنْتُمْ': 'ذَهَبْتُمْ', 'أَنْتُنَّ': 'ذَهَبْتُنَّ', 'هُوَ': 'ذَهَبَ', 'هِيَ': 'ذَهَبَتْ', 'هُمَا': 'ذَهَبَا', 'هُمْ': 'ذَهَبُوا', 'هُنَّ': 'ذَهَبْنَ' },
+                present: { 'أَنَا': 'أَذْهَبُ', 'نَحْنُ': 'نَذْهَبُ', 'أَنْتَ': 'تَذْهَبُ', 'أَنْتِ': 'تَذْهَبِينَ', 'أَنْتُمَا': 'تَذْهَبَانِ', 'أَنْتُمْ': 'تَذْهَبُونَ', 'أَنْتُنَّ': 'تَذْهَبْنَ', 'هُوَ': 'يَذْهَبُ', 'هِيَ': 'تَذْهَبُ', 'هُمَا': 'يَذْهَبَانِ', 'هُمْ': 'يَذْهَبُونَ', 'هُنَّ': 'يَذْهَبْنَ' },
+                imperative: { 'أَنْتَ': 'اذْهَبْ', 'أَنْتِ': 'اذْهَبِي', 'أَنْتُمَا': 'اذْهَبَا', 'أَنْتُمْ': 'اذْهَبُوا', 'أَنْتُنَّ': 'اذْهَبْنَ' }
+            }
+        };
+
+        // UI Tab Switcher
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.getElementById(`tab-${tabId}`).classList.remove('hidden');
+
+            // Update Navigation active state
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('bg-brand-purple', 'text-white', 'shadow-sm');
+                btn.classList.add('text-slate-600');
+            });
+
+            const activeNav = document.getElementById(`nav-${tabId}`);
+            if(activeNav) {
+                activeNav.classList.add('bg-brand-purple', 'text-white', 'shadow-sm');
+                activeNav.classList.remove('text-slate-600');
+            }
+
+            if (tabId === 'verbs') renderVerbTable();
+            if (tabId === 'game') initMatchingGame();
+            if (tabId === 'quiz') startQuiz();
+        }
+
+        // Render Pronoun Explorer Cards
+        function renderPronounCards(filter = 'all') {
+            const container = document.getElementById('pronoun-cards-container');
+            container.innerHTML = '';
+
+            const filteredData = filter === 'all' ? PRONOUNS_DATA : PRONOUNS_DATA.filter(p => p.type === filter);
+
+            filteredData.forEach(p => {
+                const card = document.createElement('div');
+                card.className = `bg-white rounded-3xl p-6 border-2 ${p.color.split(' ')[0]} shadow-md hover:shadow-xl card-hover relative overflow-hidden flex flex-col justify-between`;
+                card.innerHTML = `
+                    <div>
+                        <div class="flex justify-between items-start mb-4">
+                            <span class="text-4xl">${p.icon}</span>
+                            <span class="text-xs font-black px-3 py-1 rounded-full ${p.color.split(' ')[1]} ${p.color.split(' ')[2]}">${p.category}</span>
+                        </div>
+                        <h3 class="text-3xl font-black text-slate-800 mb-2 flex items-center justify-between">
+                            ${p.name}
+                            <button onclick="speakText('${p.name}')" class="text-slate-400 hover:text-brand-purple text-lg p-2 rounded-full hover:bg-slate-100 transition">
+                                <i class="fa-solid fa-volume-high"></i>
+                            </button>
+                        </h3>
+                        <p class="text-slate-600 font-semibold text-sm mb-4">${p.desc}</p>
+                    </div>
+                    <div class="bg-slate-50 p-3 rounded-2xl border border-slate-100 flex items-center justify-between">
+                        <span class="text-sm font-bold text-slate-700">مثال: ${p.example}</span>
+                        <button onclick="speakText('${p.example}')" class="text-brand-purple hover:scale-110 transition">
+                            <i class="fa-solid fa-circle-play text-xl"></i>
+                        </button>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function filterPronounCategory(category) {
+            renderPronounCards(category);
+        }
+
+        // Verb Conjugation Render logic
+        function setTense(tense) {
+            currentTense = tense;
+            document.querySelectorAll('.tense-btn').forEach(btn => {
+                btn.classList.remove('bg-brand-orange', 'text-white', 'shadow-sm');
+                btn.classList.add('text-slate-600');
+            });
+            const selectedBtn = document.getElementById(`tense-${tense}`);
+            selectedBtn.classList.add('bg-brand-orange', 'text-white', 'shadow-sm');
+            selectedBtn.classList.remove('text-slate-600');
+
+            renderVerbTable();
+        }
+
+        function renderVerbTable() {
+            const verbKey = document.getElementById('verb-select').value;
+            const grid = document.getElementById('verb-conjugation-grid');
+            grid.innerHTML = '';
+
+            const conjugations = VERB_DATA[verbKey][currentTense];
+
+            Object.keys(conjugations).forEach(pronounName => {
+                const conjugatedVerb = conjugations[pronounName];
+                const card = document.createElement('div');
+                card.className = "bg-white p-5 rounded-2xl shadow border border-slate-100 flex items-center justify-between hover:border-brand-purple transition";
+
+                card.innerHTML = `
+                    <div class="flex items-center gap-3">
+                        <span class="bg-purple-100 text-brand-purple font-black text-xl px-4 py-2 rounded-xl">${pronounName}</span>
+                        <div>
+                            <span class="text-2xl font-black text-slate-800 tracking-wide">${conjugatedVerb}</span>
+                        </div>
+                    </div>
+                    <button onclick="speakText('${pronounName} ${conjugatedVerb}')" class="bg-slate-100 hover:bg-brand-purple hover:text-white text-slate-600 w-10 h-10 rounded-full flex items-center justify-center transition">
+                        <i class="fa-solid fa-volume-high"></i>
+                    </button>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        // Matching Game State
+        const MATCHING_QUESTIONS = [
+            {
+                pronouns: ['أَنَا', 'هُوَ', 'أَنْتِ'],
+                sentences: [
+                    { id: 1, text: '______ أَكْتُبُ الدَّرْسَ.', answer: 'أَنَا' },
+                    { id: 2, text: '______ تَلْعَبِينَ فِي الحَدِيقَةِ.', answer: 'أَنْتِ' },
+                    { id: 3, text: '______ يَقْرَأُ الكِتَابَ.', answer: 'هُوَ' }
+                ]
+            },
+            {
+                pronouns: ['نَحْنُ', 'هُمْ', 'أَنْتُمْ'],
+                sentences: [
+                    { id: 1, text: '______ نَذْهَبُ إِلَى المَدْرَسَةِ.', answer: 'نَحْنُ' },
+                    { id: 2, text: '______ يَكْتُبُونَ الوَاجِبَ.', answer: 'هُمْ' },
+                    { id: 3, text: '______ تَلْعَبُونَ القُرَةَ.', answer: 'أَنْتُمْ' }
+                ]
+            }
+        ];
+
+        let selectedPronoun = null;
+        let selectedPronounElem = null;
+
+        function initMatchingGame() {
+            const levelData = MATCHING_QUESTIONS[0];
+            const pool = document.getElementById('drag-pronouns-pool');
+            const targetContainer = document.getElementById('drop-sentences-container');
+
+            pool.innerHTML = '';
+            targetContainer.innerHTML = '';
+
+            // Render Pronoun Pills
+            levelData.pronouns.forEach(p => {
+                const badge = document.createElement('div');
+                badge.className = "cursor-pointer bg-brand-purple text-white px-5 py-2.5 rounded-2xl font-black text-lg shadow-md hover:bg-purple-700 transition select-none flex items-center gap-2";
+                badge.innerText = p;
+                badge.onclick = () => selectPronounBadge(badge, p);
+                pool.appendChild(badge);
+            });
+
+            // Render Sentences Cards
+            levelData.sentences.forEach(s => {
+                const sCard = document.createElement('div');
+                sCard.className = "bg-slate-50 border-2 border-slate-200 p-4 rounded-2xl flex items-center justify-between text-xl font-extrabold text-slate-800";
+                sCard.innerHTML = `
+                    <span>${s.text}</span>
+                    <button onclick="assignPronounToSentence(this, '${s.answer}')" class="target-slot bg-white border-2 border-dashed border-brand-purple text-slate-400 min-w-[120px] px-4 py-2 rounded-xl text-center text-lg font-bold hover:bg-purple-50 transition">
+                        إضغط للوضع
+                    </button>
+                `;
+                targetContainer.appendChild(sCard);
+            });
+        }
+
+        function selectPronounBadge(badgeElem, pronounText) {
+            document.querySelectorAll('#drag-pronouns-pool div').forEach(b => b.classList.remove('ring-4', 'ring-amber-400'));
+            badgeElem.classList.add('ring-4', 'ring-amber-400');
+            selectedPronoun = pronounText;
+            selectedPronounElem = badgeElem;
+        }
+
+        function assignPronounToSentence(btnSlot, correctAnswer) {
+            if (!selectedPronoun) {
+                alert('اختر ضميراً أولاً بالضغط عليه ثم اضغط في الفراغ!');
+                return;
+            }
+            btnSlot.innerText = selectedPronoun;
+            btnSlot.dataset.userAnswer = selectedPronoun;
+            btnSlot.dataset.correctAnswer = correctAnswer;
+            btnSlot.classList.remove('border-dashed', 'text-slate-400');
+            btnSlot.classList.add('border-solid', 'bg-brand-purple', 'text-white');
+        }
+
+        function checkMatchingAnswers() {
+            const slots = document.querySelectorAll('.target-slot');
+            let allCorrect = true;
+            let answeredCount = 0;
+
+            slots.forEach(slot => {
+                const userAns = slot.dataset.userAnswer;
+                const correctAns = slot.dataset.correctAnswer;
+
+                if (userAns) {
+                    answeredCount++;
+                    if (userAns === correctAns) {
+                        slot.classList.remove('bg-brand-purple');
+                        slot.classList.add('bg-brand-green');
+                    } else {
+                        slot.classList.remove('bg-brand-purple');
+                        slot.classList.add('bg-red-500');
+                        allCorrect = false;
+                    }
+                } else {
+                    allCorrect = false;
+                }
+            });
+
+            if (answeredCount < slots.length) {
+                alert('الرجاء إكمال جميع الفراغات أولاً!');
+                return;
+            }
+
+            if (allCorrect) {
+                addScore(30);
+                confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
+                alert('أحسنت! إجاباتك كلها صحيحة 🎉');
+            } else {
+                alert('هناك بعض الأخطاء! حاول مرة أخرى 💪');
+            }
+        }
+
+        function resetMatchingGame() {
+            selectedPronoun = null;
+            initMatchingGame();
+        }
+
+        // Quiz System
+        const QUIZ_QUESTIONS = [
+            {
+                question: "ما هو الضمير المناسب للجملة: '_____ يَلْعَبَانِ فِي الحَدِيقَةِ'؟",
+                options: ["هُمَا", "أَنْتُمْ", "أَنَا", "هُنَّ"],
+                correct: 0,
+                explanation: "نستخدم (هُمَا) للمثنى الغائب."
+            },
+            {
+                question: "تصريف الفعل (كَتَبَ) مع الضمير (أَنَا) في الماضي هو:",
+                options: ["كَتَبْنَا", "كَتَبْتُ", "كَتَبُوا", "تَكْتُبُ"],
+                correct: 1,
+                explanation: "مع الضمير أَنَا نضيف التاء المضمومة (كَتَبْتُ)."
+            },
+            {
+                question: "أي من الضمائر التالية هو ضمير للمتكلم؟",
+                options: ["أَنْتَ", "هُوَ", "نَحْنُ", "هِيَ"],
+                correct: 2,
+                explanation: "(نَحْنُ) هو ضمير للمتكلم الجماعي أو المثنى."
+            },
+            {
+                question: "تصريف الفعل (ذَهَبَ) مع الضمير (أَنْتُمْ) في المضارع:",
+                options: ["تَذْهَبُونَ", "ذَهَبْتُمْ", "يَذْهَبُونَ", "اذْهَبُوا"],
+                correct: 0,
+                explanation: "في المضارع مع أَنْتُمْ يت يبدأ الفعل بالتاء وينتهي بـ (ون)."
+            }
+        ];
+
+        let currentQuizIndex = 0;
+
+        function startQuiz() {
+            currentQuizIndex = 0;
+            renderQuizQuestion();
+        }
+
+        function renderQuizQuestion() {
+            const q = QUIZ_QUESTIONS[currentQuizIndex];
+            document.getElementById('quiz-progress-text').innerText = `السؤال ${currentQuizIndex + 1} من ${QUIZ_QUESTIONS.length}`;
+            document.getElementById('quiz-question-title').innerText = q.question;
+
+            const optionsContainer = document.getElementById('quiz-options-container');
+            optionsContainer.innerHTML = '';
+
+            const feedback = document.getElementById('quiz-feedback');
+            feedback.classList.add('hidden');
+            document.getElementById('quiz-next-btn').classList.add('hidden');
+
+            q.options.forEach((opt, idx) => {
+                const btn = document.createElement('button');
+                btn.className = "w-full text-right p-4 rounded-2xl border-2 border-slate-200 hover:border-brand-purple font-bold text-lg transition flex items-center justify-between";
+                btn.innerHTML = `<span>${opt}</span> <i class="fa-regular fa-circle text-slate-300"></i>`;
+                btn.onclick = () => handleQuizAnswer(idx, btn);
+                optionsContainer.appendChild(btn);
+            });
+        }
+
+        function handleQuizAnswer(selectedIndex, btnElem) {
+            const q = QUIZ_QUESTIONS[currentQuizIndex];
+            const feedback = document.getElementById('quiz-feedback');
+            const options = document.querySelectorAll('#quiz-options-container button');
+
+            options.forEach(b => b.disabled = true); // Disable further clicks
+
+            if (selectedIndex === q.correct) {
+                btnElem.classList.add('bg-green-100', 'border-brand-green', 'text-brand-green');
+                feedback.className = "mt-6 p-4 rounded-2xl text-center font-bold text-lg bg-green-100 text-brand-green";
+                feedback.innerText = "إجابة صحيحة! بطل رائع 🌟 " + q.explanation;
+                addScore(10);
+                confetti({ particleCount: 50, spread: 50 });
+            } else {
+                btnElem.classList.add('bg-red-100', 'border-red-500', 'text-red-600');
+                options[q.correct].classList.add('bg-green-100', 'border-brand-green', 'text-brand-green');
+                feedback.className = "mt-6 p-4 rounded-2xl text-center font-bold text-lg bg-red-100 text-red-600";
+                feedback.innerText = "إجابة خاطئة! " + q.explanation;
+            }
+
+            feedback.classList.remove('hidden');
+            document.getElementById('quiz-next-btn').classList.remove('hidden');
+        }
+
+        function nextQuizQuestion() {
+            currentQuizIndex++;
+            if (currentQuizIndex < QUIZ_QUESTIONS.length) {
+                renderQuizQuestion();
+            } else {
+                alert('مبروك! لقد أكملت الاختبار بنجاح 🎉');
+                switchTab('explore');
+            }
+        }
+
+        function addScore(points) {
+            globalScore += points;
+            document.getElementById('global-score').innerText = globalScore;
+        }
+
+        // Initialize App
+        window.onload = function() {
+            renderPronounCards();
+        }
+    </script>
+</body>
+</html>
